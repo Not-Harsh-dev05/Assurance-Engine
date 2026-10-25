@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7f8">
+    <title>Ghost Data Assurance</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Ghost Data Assurance home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M16 3 27 8v7c0 7.2-4.6 12.2-11 14C9.6 27.2 5 22.2 5 15V8l11-5Zm0 4.2-7 3.2V15c0 4.8 2.7 8.4 7 10 4.3-1.6 7-5.2 7-10v-4.6l-7-3.2Zm-1.2 12.2-3.3-3.3 1.8-1.8 1.5 1.5 3.8-3.8 1.8 1.8-5.6 5.6Z"/></svg>
+          </span>
+          <span class="brand-copy"><strong>Ghost Data</strong><small>ASSURANCE CONSOLE</small></span>
+        </a>
+        <div class="side-label">WORKSPACE</div>
+        <a class="nav-item active" href="#overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg>
+          <span>Audit overview</span>
+        </a>
+        <a class="nav-item" href="#cases">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h12v16H4V8l4-4Z"/><path d="M8 4v4H4M8 12h8M8 16h8"/></svg>
+          <span>Deletion requests</span>
+          <span class="nav-count" id="nav-case-count">—</span>
+        </a>
+        <a class="nav-item" href="#sources">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3 2 0 3.8-.3 5.2-.9"/></svg>
+          <span>Evidence sources</span>
+        </a>
+        <div class="sidebar-bottom">
+          <div class="privacy-card">
+            <span class="privacy-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5.2-3.3 8.8-8 10-4.7-1.2-8-4.8-8-10V6l8-3Z"/><path d="m8.5 12 2.3 2.3 4.8-4.8"/></svg></span>
+            <strong>Evidence-first review</strong>
+            <p>Reported status is a claim, never proof of deletion.</p>
+          </div>
+          <div class="user-row"><span class="avatar">GA</span><span><strong>Audit workspace</strong><small>Local environment</small></span><span class="online-dot" title="Service online"></span></div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div class="breadcrumb"><span>Workspace</span><span class="crumb-sep">/</span><strong>Deletion assurance</strong></div>
+          <div class="top-actions">
+            <span class="local-badge"><i></i> LOCAL &amp; PRIVATE</span>
+            <button class="icon-button" id="refresh-button" type="button" aria-label="Refresh data" title="Refresh data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2"/></svg></button>
+          </div>
+        </header>
+
+        <div class="content">
+          <div id="error-banner" class="alert alert-error hidden" role="alert"></div>
+          <div id="notice-banner" class="alert alert-notice hidden" role="status"></div>
+
+          <section id="overview" class="page-heading">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-dot"></span> PRIVACY OPERATIONS</div>
+              <h1>Deletion assurance</h1>
+              <p class="subtitle">Verify deletion requests against evidence, policy, and system activity.</p>
+            </div>
+            <div class="heading-actions">
+              <label class="button button-secondary upload-button" for="csv-upload">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M5 14v5h14v-5"/></svg>
+                Import requests
+              </label>
+              <input id="csv-upload" type="file" accept=".csv,text/csv" hidden>
+              <button id="run-audit" class="button button-primary" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="5"/></svg>
+                <span>Run verification</span>
+              </button>
+            </div>
+          </section>
+
+          <section id="audit-alert" class="audit-alert hidden" aria-live="polite">
+            <div class="alert-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.8 19h18.4L12 3Z"/><path d="M12 9v4m0 3h.01"/></svg></div>
+            <div class="alert-copy"><strong id="audit-alert-title">Evidence gaps need attention</strong><p id="audit-alert-copy"></p></div>
+            <a href="#sources" class="text-link">Review sources <span>→</span></a>
+          </section>
+
+          <section class="metric-grid" aria-label="Audit totals">
+            <article class="metric-card metric-total">
+              <div class="metric-top"><span class="metric-label">TOTAL REQUESTS</span><span class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h12v16H4V8l4-4Z"/><path d="M8 4v4H4m4 4h8m-8 4h8"/></svg></span></div>
+              <div id="metric-total" class="metric-value">—</div><div class="metric-foot">Requests loaded for review</div>
+            </article>
+            <article class="metric-card metric-complete">
+              <div class="metric-top"><span class="metric-label">COMPLETE</span><span class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span></div>
+              <div id="metric-complete" class="metric-value">0</div><div class="metric-foot">Evidence supports completion</div>
+            </article>
+            <article class="metric-card metric-incomplete">
+              <div class="metric-top"><span class="metric-label">INCOMPLETE</span><span class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6m0 3h.01"/></svg></span></div>
+              <div id="metric-incomplete" class="metric-value">0</div><div class="metric-foot">Action or evidence still required</div>
+            </article>
+            <article class="metric-card metric-na">
+              <div class="metric-top"><span class="metric-label">NOT APPLICABLE</span><span class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg></span></div>
+              <div id="metric-na" class="metric-value">0</div><div class="metric-foot">Outside the deletion scope</div>
+            </article>
+          </section>
+
+          <section class="workspace-grid">
+            <section id="cases" class="panel cases-panel">
+              <div class="panel-heading">
+                <div><div class="section-kicker">CASE REGISTER</div><h2>Deletion requests <span id="cases-total" class="heading-count">—</span></h2></div>
+                <a class="subtle-link" href="/api/results/export.csv" id="export-link" aria-disabled="true">Export CSV <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m0 0 5-5m-5 5-5-5m-2 9h14"/></svg></a>
+              </div>
+              <div class="table-toolbar">
+                <label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4 4"/></svg><input id="search-input" type="search" placeholder="Search cases, email, or request…" aria-label="Search cases"></label>
+                <label class="filter-select"><span class="sr-only">Filter by audit status</span><select id="status-filter"><option value="">All audit statuses</option><option>COMPLETE</option><option>INCOMPLETE</option><option>NOT_APPLICABLE</option></select></label>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>CASE / REQUESTER</th><th>REQUEST DATE</th><th>REPORTED</th><th>AUDIT RESULT</th><th><span class="sr-only">Details</span></th></tr></thead>
+                  <tbody id="cases-body"><tr><td colspan="5" class="table-loading"><span class="spinner"></span> Loading requests…</td></tr></tbody>
+                </table>
+              </div>
+              <div class="table-footer"><span id="pagination-summary">Loading cases</span><div class="pagination"><button id="page-prev" class="page-button" type="button" aria-label="Previous page" disabled>‹</button><span id="page-number">1</span><button id="page-next" class="page-button" type="button" aria-label="Next page" disabled>›</button></div></div>
+            </section>
+
+            <aside class="panel detail-panel" id="detail-panel">
+              <div class="panel-heading detail-heading"><div><div class="section-kicker">CASE REVIEW</div><h2>Case details</h2></div><span class="detail-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h12v16H4V8l4-4Z"/><path d="M8 4v4H4"/></svg></span></div>
+              <div id="case-detail" class="detail-content"><div class="empty-detail"><span class="empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h12v16H4V8l4-4Z"/><path d="M8 4v4H4m4 4h8m-8 4h6"/></svg></span><strong>Select a request</strong><p>Choose a case from the register to inspect its request and verification findings.</p></div></div>
+            </aside>
+          </section>
+
+          <section id="sources" class="panel source-panel">
+            <div class="panel-heading">
+              <div><div class="section-kicker">DATA COVERAGE</div><h2>Evidence sources</h2><p class="panel-description">Required datasets are discovered from the dataset folder at runtime.</p></div>
+              <span id="source-summary" class="source-summary">Checking inputs…</span>
+            </div>
+            <div id="source-list" class="source-list"><div class="source-loading"><span class="spinner"></span> Inspecting dataset files…</div></div>
+            <div class="source-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg><span>Missing source files are surfaced as evidence gaps. A reported <code>COMPLETE</code> value is never treated as proof.</span></div>
+          </section>
+
+          <footer class="footer"><span>Ghost Data Assurance</span><span>Deterministic review · Local data stays on this machine</span><a href="/api/docs">API documentation</a></footer>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

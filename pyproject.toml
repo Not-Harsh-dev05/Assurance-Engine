@@ -1,15 +1,22 @@
 [project]
 name = "assurance-engine"
 version = "0.1.0"
-description = "Add your description here"
+description = "Evidence-grounded deletion assurance dashboard and deterministic verification engine"
 readme = "README.md"
 authors = [
     { name = "Not-Harsh-dev05", email = "harshgarg5907@gmail.com" }
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "fastapi>=0.115,<1",
+    "openai>=3.37.0",
     "pydantic>=2.14.1",
+    "uvicorn>=0.34,<1",
 ]
+
+[project.scripts]
+ghost-audit-web = "assurance_engine.webapp:run"
+validate-deletion-requests = "assurance_engine.deletion_requests:main"
 
 [build-system]
 requires = ["uv_build>=0.13.4,<0.14.0"]
@@ -17,6 +24,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28,<1",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
 ]
