@@ -1,4 +1,4 @@
-
+from assurance_engine.engine import verify
 from assurance_engine.schemas import (
     Evidence,
     Finding,
@@ -13,4 +13,5 @@ __all__ = [
     "VerificationPolicy",
     "VerificationResult",
     "Verdict",
+    "verify",
 ]
